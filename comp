@@ -1,0 +1,1 @@
+linux:g++ -std=c++14 -o forlinux -pthread main.cpp ai.cpp game.cpp
