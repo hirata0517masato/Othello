@@ -637,26 +637,30 @@ board turn_monte(int S_color, board mon, int t_max){
     board after;
 
     flag = search(S_color, &mon);//置ける場所を探す
-
+    std::vector<std::pair<int,int>> red;
+    
     if (flag == 0){//置ける場所がある
-
 	for (int i = 1; i <= 8; i++){
 	    for (int j = 1; j <= 8; j++){
-		if (((mon.rpiece >> (64 - j - ((i - 1) * 8))) & 1) == 1){//置ける場所を探す board[i][j] == 1
+		//置ける場所を探す board[i][j] == 1
+		if (((mon.rpiece >> (64 - j - ((i - 1) * 8))) & 1) == 1)red.push_back(std::make_pair(i,j));
+	    }
+	}
+	int r_size = red.size();
+	int cnt = t_max/r_size;
+	for(int c = 0; c < r_size; c++){
+	    int i = red[c].first, j = red[c].second;
 
-		    score = 0;
-		    after = operation(i, j, S_color, mon);
-		    for (int k = 0; k < t_max; k++){
-			score += turn_mon_next(next_color, S_color, after);
-		    }
+	    score = 0;
+	    after = operation(i, j, S_color, mon);
+	    for (int k = 0; k < cnt; k++){
+		score += turn_mon_next(next_color, S_color, after);
+	    }
 
-		    if (hightscore < score/t_max){//記録更新なら
-			I = i;
-			J = j;
-			hightscore = score/t_max;
-		    }
-					
-		}
+	    if (hightscore < score/cnt){//記録更新なら
+		I = i;
+		J = j;
+		hightscore = score/cnt;
 	    }
 	}
     }
@@ -683,7 +687,7 @@ board turn_monte(int S_color, board mon, int t_max){
 /*	turn_mon_next関数　開始　*//////////////////////////////////////////////////////////////////////////////
 double turn_mon_next(int color, int  S_color, board mon){
 
-    int flag, rand, rand_cnt = 0;
+    int flag, rand;
     int i, j;
     double score = 0;
     int next_color = color ^ 1;
@@ -693,21 +697,18 @@ double turn_mon_next(int color, int  S_color, board mon){
     flag = search(color, &mon);//置ける場所を探す
 
     if (flag == 0){//置ける場所がある
+	std::vector<std::pair<int,int>> red;
 
-	while (rand_cnt <= rand){
-	    for (i = 1; i <= 8; i++){
+	for (i = 1; i <= 8; i++){
 		for (j = 1; j <= 8; j++){
-		    if (((mon.rpiece >> (64 - j - ((i - 1) * 8))) & 1) == 1){//置ける場所を探す board[i][j] == 1
-
-			if (rand_cnt == rand){//ランダム値を見つけたら
-			    score = turn_mon_next(next_color, S_color, operation(i, j, color, mon));
-			}
-			rand_cnt++;
-		    }
+		    //置ける場所を探す board[i][j] == 1
+		    if (((mon.rpiece >> (64 - j - ((i - 1) * 8))) & 1) == 1)red.push_back(std::make_pair(i,j));
 		}
-	    }
 	}
-
+	int r_size = red.size();
+	int r_num = rand%r_size;
+	
+	score = turn_mon_next(next_color, S_color, operation(red[r_num].first, red[r_num].second, color, mon));
     }
     else {//置けないない
 	flag = search(next_color, &mon);//相手が置けるか調べる
@@ -718,21 +719,20 @@ double turn_mon_next(int color, int  S_color, board mon){
 	else{
 	    if (S_color == Black){
 		if (mon.bpnum > mon.wpnum){//勝ち
-		    mon.bpiece = ~(mon.wpiece);//空白マスも自分のマスに
+		    score = 1;
 		}
 		else{
-		    mon.wpiece = ~(mon.bpiece);//空白マスも相手のマスに
+		    score = 0;
 		}
 	    }
 	    else{
 		if (mon.bpnum < mon.wpnum){//勝ち
-		    mon.wpiece = ~(mon.bpiece);//空白マスも自分のマスに
+		    score = 1;
 		}
 		else{
-		    mon.bpiece = ~(mon.wpiece);//空白マスも相手のマスに
+		    score = 0;
 		}
 	    }
-	    score = evaluation(S_color, &mon, 1);
 	}
     }
 
