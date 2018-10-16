@@ -159,7 +159,7 @@ void OP(){
 	
 	    flag = 1;//ゲームスタート
 
-	    B_player = 5;//手動
+	    B_player = 0;//手動
 	    W_player = 4;//オート7
 		
 	}else if (mode == 'W'){
