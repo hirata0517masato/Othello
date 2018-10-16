@@ -36,13 +36,14 @@ void total(){
 
 /*	pieceprint関数　開始　*//////////////////////////////////////////////////////////////////////////////
 void pieceprint(int color, board * print){
-    int i, j;
+    int i, j,pi = 99,pj = 99;
     ULL bit_check;
     ULL b, w, r, y;
 
     bit_check = (ULL)1 << 63;
 
-   
+    std::cout << std::endl;
+    std::cout << "-----------------------------------" << std::endl;
     std::cout << " ABCDEFGH" << std::endl;
     
     for (i = 1; i <= 8; i++){
@@ -56,45 +57,51 @@ void pieceprint(int color, board * print){
 
 	    if (b > 0 && w == 0)std::cout << "B";
 	    else if (b == 0 && w > 0)std::cout << "W";
-	    else if (r > 0)std::cout << "R";
-	    //if (y > 0)DrawGraph(Bass_X_Size * j, Bass_Y_Size * i, img_Yellow, TRUE);//画像の表示
+	    else if (r > 0)std::cout << "O";
 	    else std::cout << "_";
-	   
+	    
+	    if(y > 0){
+		pi = i;
+		pj = j;
+	    }
 	    bit_check >>= 1;
 
 	}
 	std::cout << std::endl;
     }
 
-
-    std::cout << "白 " <<  print->wpnum << " 黒 " <<  print->bpnum << std::endl;
+    if(pi != 99 && pj != 99){
+	std::cout << "put : " << (char)('a'+pj-1) << "  " << pi << std::endl;
+    }
+    std::cout << std::endl;
+    std::cout << "W : " <<  print->wpnum << " B : " <<  print->bpnum << std::endl;
 
     switch (color){
     case Black:
-	std::cout << "黒のターンです" << std::endl;
+	std::cout << "Turn of B" << std::endl;
 
 	if (print->pass == White){
-	    std::cout << "白がパスしました" << std::endl;
+	    std::cout << "pass W" << std::endl;
 	}
 	break;
     case White:
-	std::cout << "白のターンです" << std::endl;
+	std::cout << "Turn of W" << std::endl;
 
 	if (print->pass == Black){
-	    std::cout << "黒がパスしました" << std::endl;
+	    std::cout << "pass B" << std::endl;
 	}
 	break;
     case 999:
 	if (print->wpnum > print->bpnum){
-	    std::cout <<   "白の勝ちです" << std::endl;
+	    std::cout <<   "Win W" << std::endl;
 
 	}
 	else if (print->wpnum < print->bpnum){
-	    std::cout << "黒の勝ちです" << std::endl;
+	    std::cout << "Win B" << std::endl;
 
 	}
 	else{
-	    std::cout << "同点です" << std::endl;
+	    std::cout << "Draw" << std::endl;
 	}
 	break;
     }
@@ -128,7 +135,7 @@ void init(void){
     original.pass = Non;
 
     
-    pieceprint(Non, &original);
+    //pieceprint(Non, &original);
     
 }
 /*	init関数　終了　*////////////////////////////////////////////////////////////////////////////////
@@ -152,7 +159,7 @@ void OP(){
 	
 	    flag = 1;//ゲームスタート
 
-	    B_player = 0;//手動
+	    B_player = 5;//手動
 	    W_player = 4;//オート7
 		
 	}else if (mode == 'W'){
@@ -268,7 +275,7 @@ int main(){
 		}
 		break;
 	    case 5:
-		if (f == 0)original = turn_monte(Black, original,20000);
+		if (f == 0)original = turn_monte(Black, original,200000);
 		break;
 	    }
 
@@ -312,7 +319,7 @@ int main(){
 		break;
 	    case 5:
 		if (f == 0){
-		    original = turn_monte(White, original, 20000);
+		    original = turn_monte(White, original, 200000);
 		}
 		break;
 	    }

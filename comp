@@ -1,1 +1,3 @@
-linux:g++ -std=c++14 -o forlinux -pthread main.cpp ai.cpp game.cpp
+linux:g++ -std=c++14 -o forlinux -pthread main.cpp ai.cpp game.cpp -O3 -mtune=native -march=native -mfpmath=both
+
+mac: g++-8 -std=c++14 -o formac -pthread main.cpp ai.cpp game.cpp -O3 -mtune=native -march=native -mfpmath=both
