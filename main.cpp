@@ -159,8 +159,8 @@ void OP(){
 	
 	    flag = 1;//ゲームスタート
 
-	    B_player = 0;//手動
-	    W_player = 4;//オート7
+	    B_player = 5;//手動
+	    W_player = 3;//オート7
 		
 	}else if (mode == 'W'){
 	
@@ -275,7 +275,7 @@ int main(){
 		}
 		break;
 	    case 5:
-		if (f == 0)original = turn_monte(Black, original,200000);
+		if (f == 0)original = turn_monte(Black, original,300000 + cnt*5000);
 		break;
 	    }
 
