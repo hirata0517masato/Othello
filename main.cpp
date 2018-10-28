@@ -159,15 +159,15 @@ void OP(){
 	
 	    flag = 1;//ゲームスタート
 
-	    B_player = 5;//手動
-	    W_player = 3;//オート7
+	    B_player = 4;//手動
+	    W_player = 6;//オート7
 		
 	}else if (mode == 'W'){
 	
 	    flag = 1;//ゲームスタート
 
-	    B_player = 4;//オート7
-	    W_player = 0;//手動
+	    B_player = 6;//オート7
+	    W_player = 4;//手動
 		
 	}else if (mode == 'E') END_Flag = 1;//終了
 
@@ -275,7 +275,10 @@ int main(){
 		}
 		break;
 	    case 5:
-		if (f == 0)original = turn_monte(Black, original,300000 + cnt*5000);
+		if (f == 0)original = turn_monte(Black, original,300000 + cnt*6000);
+		break;
+	    case 6:
+		if (f == 0)original = turn_monte2(Black, original,300000 + cnt*6000);
 		break;
 	    }
 
@@ -319,7 +322,12 @@ int main(){
 		break;
 	    case 5:
 		if (f == 0){
-		    original = turn_monte(White, original, 200000);
+		    original = turn_monte(White, original, 300000 + (cnt-1)*6000);
+		}
+		break;
+	    case 6:
+		if (f == 0){
+		    original = turn_monte2(White, original, 300000 + (cnt-1)*6000);
 		}
 		break;
 	    }

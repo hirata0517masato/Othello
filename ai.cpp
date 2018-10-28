@@ -680,8 +680,8 @@ board turn_monte(int S_color, board mon, int t_max){
 
     return mon;
 }
-/*
-board turn_monte(int S_color, board mon, int t_max){
+
+board turn_monte2(int S_color, board mon, int t_max){
 
     int I = 0, J = 0, flag,r_size = 0;
     int next_color = S_color ^ 1;
@@ -696,8 +696,8 @@ board turn_monte(int S_color, board mon, int t_max){
 	
 	for(int i = 0; i < 64; i++){
 	    if ((mon.rpiece & 1) == 1){
-		red[r_size++] = std::make_pair( 8-(i>>3) ,8-(i&0x07));
-		after_m[r_size] = operation(8-(i>>3) ,8-(i&0x07), S_color, mon);
+		red[r_size] = std::make_pair( 8-(i>>3) ,8-(i&0x07));
+		after_m[r_size++] = operation(8-(i>>3) ,8-(i&0x07), S_color, mon);
 	    }
 	    mon.rpiece >>= 1;
 	}
@@ -718,7 +718,7 @@ board turn_monte(int S_color, board mon, int t_max){
 	while(t_max > cnt && num.size() > 0){
 	    int n = num[cnt%num.size()];
 	    
-	    if(sc[n].first / sc[n].second > 0.0 + ((t_max/2 < cnt)? 0.0 : 0.0)){
+	    if(sc[n].first / sc[n].second > 0.3 + ((t_max/2 < cnt)? 0.3 : 0.0)){
 
 		after = after_m[n];
 		sc[n].first += turn_mon_next(next_color, S_color, after);
@@ -767,7 +767,7 @@ board turn_monte(int S_color, board mon, int t_max){
     mon.p_cnt += 1;
 
     return mon;
-}*/
+}
 /*	turn_monteŠÖ”@I—¹@*////////////////////////////////////////////////////////////////////////////////
 
 
