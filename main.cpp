@@ -5,7 +5,6 @@
 
 #define Wait 500		//待ち時間（1ms)
 
-
 //関数のプロトタイプ宣言
 void init(void);
 void pieceprint(int, board *);
