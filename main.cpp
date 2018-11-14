@@ -158,15 +158,15 @@ void OP(){
 	
 	    flag = 1;//ゲームスタート
 
-	    B_player = 4;//手動
-	    W_player = 6;//オート7
+	    B_player = 0;//手動
+	    W_player = 4;//オート7
 		
 	}else if (mode == 'W'){
 	
 	    flag = 1;//ゲームスタート
 
-	    B_player = 6;//オート7
-	    W_player = 4;//手動
+	    B_player = 4;//オート7
+	    W_player = 0;//手動
 		
 	}else if (mode == 'E') END_Flag = 1;//終了
 
