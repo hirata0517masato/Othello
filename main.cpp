@@ -5,7 +5,6 @@
 
 #define Wait 500		//待ち時間（1ms)
 
-
 //関数のプロトタイプ宣言
 void init(void);
 void pieceprint(int, board *);
@@ -275,7 +274,10 @@ int main(){
 		}
 		break;
 	    case 5:
-		if (f == 0)original = turn_monte(Black, original,200000);
+		if (f == 0)original = turn_monte(Black, original,300000 + cnt*6000);
+		break;
+	    case 6:
+		if (f == 0)original = turn_monte2(Black, original,300000 + cnt*6000);
 		break;
 	    }
 
@@ -319,7 +321,12 @@ int main(){
 		break;
 	    case 5:
 		if (f == 0){
-		    original = turn_monte(White, original, 200000);
+		    original = turn_monte(White, original, 300000 + (cnt-1)*6000);
+		}
+		break;
+	    case 6:
+		if (f == 0){
+		    original = turn_monte2(White, original, 300000 + (cnt-1)*6000);
 		}
 		break;
 	    }

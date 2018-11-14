@@ -14,4 +14,6 @@ board turn_monte(int, board , int );
 double turn_mon_next(int, int, board);
 double evaluation(int, board *,int);
 
+board turn_monte2(int, board , int );
+
 #endif

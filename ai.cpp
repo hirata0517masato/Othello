@@ -628,25 +628,26 @@ double turn_ab_next(int color, int S_color, board ab,int t_max, double p_score){
 
 
 /*	turn_monte関数　開始　*//////////////////////////////////////////////////////////////////////////////
+
 board turn_monte(int S_color, board mon, int t_max){
 
-    int I = 0, J = 0, flag;
+    int I = 0, J = 0, flag,r_size = 0;
     int next_color = S_color ^ 1;
     double hightscore = -99999999, score;
 
     board after;
 
     flag = search(S_color, &mon);//置ける場所を探す
-    std::vector<std::pair<int,int>> red;
+    std::vector<std::pair<int,int>> red(64);
     
     if (flag == 0){//置ける場所がある
-	for (int i = 1; i <= 8; i++){
-	    for (int j = 1; j <= 8; j++){
-		//置ける場所を探す board[i][j] == 1
-		if (((mon.rpiece >> (64 - j - ((i - 1) * 8))) & 1) == 1)red.push_back(std::make_pair(i,j));
-	    }
+	
+	for(int i = 0; i < 64; i++){
+	    if ((mon.rpiece & 1) == 1)red[r_size++] = std::make_pair( 8-(i>>3) ,8-(i&0x07));
+	    mon.rpiece >>= 1;
 	}
-	int r_size = red.size();
+
+	
 	int cnt = t_max/r_size;
 	for(int c = 0; c < r_size; c++){
 	    int i = red[c].first, j = red[c].second;
@@ -679,6 +680,94 @@ board turn_monte(int S_color, board mon, int t_max){
 
     return mon;
 }
+
+board turn_monte2(int S_color, board mon, int t_max){
+
+    int I = 0, J = 0, flag,r_size = 0;
+    int next_color = S_color ^ 1;
+    double hightscore = -99999999;
+
+    flag = search(S_color, &mon);//置ける場所を探す
+    std::vector<std::pair<int,int>> red(64);
+    std::vector<board> after_m(64);
+    board after;
+    
+    if (flag == 0){//置ける場所がある
+	
+	for(int i = 0; i < 64; i++){
+	    if ((mon.rpiece & 1) == 1){
+		red[r_size] = std::make_pair( 8-(i>>3) ,8-(i&0x07));
+		after_m[r_size++] = operation(8-(i>>3) ,8-(i&0x07), S_color, mon);
+	    }
+	    mon.rpiece >>= 1;
+	}
+
+	std::vector<std::pair<double,int>> sc(r_size);
+	std::vector<int> num(r_size);
+	
+	for(int c = 0; c < r_size; c++){
+	    num[c] = c;
+	    after = after_m[c];
+	    for (int k = 0; k < 1000; k++){
+		sc[c].first += turn_mon_next(next_color, S_color, after);
+		sc[c].second++;
+	    }
+	}
+
+	int cnt = 0;
+	while(t_max > cnt && num.size() > 0){
+	    int n = num[cnt%num.size()];
+	    
+	    if(sc[n].first / sc[n].second > 0.3 + ((t_max/2 < cnt)? 0.3 : 0.0)){
+
+		after = after_m[n];
+		sc[n].first += turn_mon_next(next_color, S_color, after);
+		sc[n].second++;
+
+		cnt++;
+	
+	    }else{
+		num.erase(num.begin()+(cnt%num.size()));	
+	    }
+	}
+
+	if(num.size() <= 0){
+	      while(t_max > cnt ){
+		int n = num[cnt%sc.size()];
+	    
+		after = after_m[n];
+		sc[n].first += turn_mon_next(next_color, S_color, after);
+		sc[n].second++;
+
+		cnt++;
+	      }
+	}
+	
+	for(int c = 0; c < r_size; c++){
+	    
+	    if (hightscore < sc[c].first / sc[c].second){//記録更新なら
+		I = red[c].first;
+		J = red[c].second;
+		hightscore = sc[c].first / sc[c].second;
+	    }
+	}
+	
+    }
+    else {//はじめから置けないなら考える必要はない
+
+	mon.pass = S_color;
+	mon.p_cnt = 0;//パス後のwaitを一回にするため
+
+	return mon;
+    }
+
+    mon = operation(I, J, S_color, mon);//確定
+
+    mon.pass = Non;
+    mon.p_cnt += 1;
+
+    return mon;
+}
 /*	turn_monte関数　終了　*////////////////////////////////////////////////////////////////////////////////
 
 
@@ -687,7 +776,7 @@ board turn_monte(int S_color, board mon, int t_max){
 /*	turn_mon_next関数　開始　*//////////////////////////////////////////////////////////////////////////////
 double turn_mon_next(int color, int  S_color, board mon){
 
-    int flag, rand;
+    int flag, rand,r_size = 0;
     int i, j;
     double score = 0;
     int next_color = color ^ 1;
@@ -697,15 +786,13 @@ double turn_mon_next(int color, int  S_color, board mon){
     flag = search(color, &mon);//置ける場所を探す
 
     if (flag == 0){//置ける場所がある
-	std::vector<std::pair<int,int>> red;
+	std::vector<std::pair<int,int>> red(64);
 
-	for (i = 1; i <= 8; i++){
-		for (j = 1; j <= 8; j++){
-		    //置ける場所を探す board[i][j] == 1
-		    if (((mon.rpiece >> (64 - j - ((i - 1) * 8))) & 1) == 1)red.push_back(std::make_pair(i,j));
-		}
+	for(int i = 0; i < 64; i++){
+	    if (mon.rpiece & 1)red[r_size++] = std::make_pair( 8-(i>>3) ,8-(i&0x07));
+	    mon.rpiece >>= 1;
 	}
-	int r_size = red.size();
+
 	int r_num = rand%r_size;
 	
 	score = turn_mon_next(next_color, S_color, operation(red[r_num].first, red[r_num].second, color, mon));
