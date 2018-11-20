@@ -31,7 +31,7 @@ int board_G[10][10] = { { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 
 std::random_device rnd;     // 非決定的な乱数生成器を生成
 std::mt19937 mt(rnd());     //  メルセンヌ・ツイスタの32ビット版、引数は初期シード値
-std::uniform_int_distribution<> rand64(0, 64);        // [0, 99] 範囲の一様乱数
+std::uniform_int_distribution<> rand64(0, 10000);        // [0, 99] 範囲の一様乱数
    
 /*	turn_dfs関数　開始　*//////////////////////////////////////////////////////////////////////////////
 board turn_dfs(int color,board dfs,int t_max){
@@ -718,7 +718,7 @@ board turn_monte2(int S_color, board mon, int t_max){
 	while(t_max > cnt && num.size() > 0){
 	    int n = num[cnt%num.size()];
 	    
-	    if(sc[n].first / sc[n].second > 0.3 + ((t_max/2 < cnt)? 0.3 : 0.0)){
+	    if(sc[n].first / sc[n].second > 0.2 + ((t_max/2 < cnt)? 0.6 : 0.0)){
 
 		after = after_m[n];
 		sc[n].first += turn_mon_next(next_color, S_color, after);
@@ -745,10 +745,10 @@ board turn_monte2(int S_color, board mon, int t_max){
 	
 	for(int c = 0; c < r_size; c++){
 	    
-	    if (hightscore < sc[c].first / sc[c].second){//記録更新なら
+	    if (hightscore < sc[c].first / sc[c].second + (double)sc[c].second / t_max / 1000){//記録更新なら
 		I = red[c].first;
 		J = red[c].second;
-		hightscore = sc[c].first / sc[c].second;
+		hightscore = sc[c].first / sc[c].second + (double)sc[c].second / t_max / 1000;
 	    }
 	}
 	
@@ -781,7 +781,7 @@ double turn_mon_next(int color, int  S_color, board mon){
     double score = 0;
     int next_color = color ^ 1;
 
-    rand = rand64(mt);//0-64の値でランダム
+    rand = rand64(mt);//ランダム
 
     flag = search(color, &mon);//置ける場所を探す
 
