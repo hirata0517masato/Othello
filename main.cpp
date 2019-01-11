@@ -158,7 +158,7 @@ void OP(){
 	
 	    flag = 1;//ゲームスタート
 
-	    B_player = 0;//手動
+	    B_player = 6;//手動
 	    W_player = 4;//オート7
 		
 	}else if (mode == 'W'){
@@ -166,7 +166,7 @@ void OP(){
 	    flag = 1;//ゲームスタート
 
 	    B_player = 4;//オート7
-	    W_player = 0;//手動
+	    W_player = 6;//手動
 		
 	}else if (mode == 'E') END_Flag = 1;//終了
 
@@ -269,15 +269,15 @@ int main(){
 
 		if (f == 0){
 		    if (cnt >47)original = turn_ab(Black, original, 100);
-		    else if (cnt >33)original = turn_ab(Black, original, 11);
-		    else original = turn_ab(Black, original, 10);
+		    else if (cnt >33)original = turn_ab(Black, original, 12);
+		    else original = turn_ab(Black, original, 11);
 		}
 		break;
 	    case 5:
 		if (f == 0)original = turn_monte(Black, original,300000 + cnt*6000);
 		break;
 	    case 6:
-		if (f == 0)original = turn_monte2(Black, original,300000 + cnt*6000);
+		if (f == 0)original = turn_monte2(Black, original,350000 + cnt*7000);
 		break;
 	    }
 
@@ -315,8 +315,8 @@ int main(){
 				
 		if (f == 0){
 		    if (cnt > 47)original = turn_ab(White, original, 200);
-		    else if (cnt > 33)original = turn_ab(White, original, 11);
-		    else original = turn_ab(White, original, 10);
+		    else if (cnt > 33)original = turn_ab(White, original, 12);
+		    else original = turn_ab(White, original, 11);
 		}
 		break;
 	    case 5:
@@ -326,7 +326,7 @@ int main(){
 		break;
 	    case 6:
 		if (f == 0){
-		    original = turn_monte2(White, original, 300000 + (cnt-1)*6000);
+		    original = turn_monte2(White, original, 350000 + (cnt-1)*7000);
 		}
 		break;
 	    }
