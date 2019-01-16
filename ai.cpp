@@ -18,16 +18,27 @@
 	{0,120,-20,20,5,5,20,-20,120,0},
 	{0,0,0,0,0,0,0,0,0,0}};
 */
-int board_G[10][10] = { { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-			{ 0, 30, -12, 0, -1, -1, 0, -12, 30, 0 },
-			{ 0, -12, -15, -3, -3, -3, -3, -15, -12, 0 },
-			{ 0, 0, -3, 0, -1, -1, 0, -3, 0, 0 },
-			{ 0, -1, -3, -1, -1, -1, -1, -3, -1, 0 },
-			{ 0, -1, -3, -1, -1, -1, -1, -3, -1, 0 },
-			{ 0, 0, -3, 0, -1, -1, 0, -3, 0, 0 },
-			{ 0, -12, -15, -3, -3, -3, -3, -15, -12, 0 },
-			{ 0, 30, -12, 0, -1, -1, 0, -12, 30, 0 },
-			{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
+int board_G_W[10][10] = { { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+			  { 0, 30, -12, 0, -1, -1, 0, -12, 30, 0 },
+			  { 0, -12, -15, -3, -3, -3, -3, -15, -12, 0 },
+			  { 0, 0, -3, 0, -1, -1, 0, -3, 0, 0 },
+			  { 0, -1, -3, -1, -1, -1, -1, -3, -1, 0 },
+			  { 0, -1, -3, -1, -1, -1, -1, -3, -1, 0 },
+			  { 0, 0, -3, 0, -1, -1, 0, -3, 0, 0 },
+			  { 0, -12, -15, -3, -3, -3, -3, -15, -12, 0 },
+			  { 0, 30, -12, 0, -1, -1, 0, -12, 30, 0 },
+			  { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
+
+int board_G_B[10][10] = { { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+			  { 0, 30, -12, 0, -1, -1, 0, -12, 30, 0 },
+			  { 0, -12, -15, -3, -3, -3, -3, -15, -12, 0 },
+			  { 0, 0, -3, 0, -1, -1, 0, -3, 0, 0 },
+			  { 0, -1, -3, -1, -1, -1, -1, -3, -1, 0 },
+			  { 0, -1, -3, -1, -1, -1, -1, -3, -1, 0 },
+			  { 0, 0, -3, 0, -1, -1, 0, -3, 0, 0 },
+			  { 0, -12, -15, -3, -3, -3, -3, -15, -12, 0 },
+			  { 0, 30, -12, 0, -1, -1, 0, -12, 30, 0 },
+			  { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
 
 std::random_device rnd;     // 非決定的な乱数生成器を生成
 std::mt19937 mt(rnd());     //  メルセンヌ・ツイスタの32ビット版、引数は初期シード値
@@ -552,11 +563,22 @@ double turn_ab_next(int color, int S_color, board ab,int t_max, double p_score){
 	    }
 
 	    //バブルソート
-	    for (int i = 0; i < index; i++){
-		for (int j = 0; j < index - 1 - i; j++){
-		    if (board_G[di[j]][dj[j]] < board_G[di[j + 1]][dj[j + 1]]){
-			std::swap(di[j + 1],di[j]);
-			std::swap(dj[j + 1],dj[j]);
+	    if(color == White){
+		for (int i = 0; i < index; i++){
+		    for (int j = 0; j < index - 1 - i; j++){
+			if (board_G_W[di[j]][dj[j]] < board_G_W[di[j + 1]][dj[j + 1]]){
+			    std::swap(di[j + 1],di[j]);
+			    std::swap(dj[j + 1],dj[j]);
+			}
+		    }
+		}
+	    }else{
+		for (int i = 0; i < index; i++){
+		    for (int j = 0; j < index - 1 - i; j++){
+			if (board_G_B[di[j]][dj[j]] < board_G_B[di[j + 1]][dj[j + 1]]){
+			    std::swap(di[j + 1],di[j]);
+			    std::swap(dj[j + 1],dj[j]);
+			}
 		    }
 		}
 	    }
@@ -732,7 +754,7 @@ board turn_monte2(int S_color, board mon, int t_max){
 	}
 
 	if(num.size() <= 0){
-	      while(t_max > cnt ){
+	    while(t_max > cnt ){
 		int n = num[cnt%sc.size()];
 	    
 		after = after_m[n];
@@ -740,7 +762,7 @@ board turn_monte2(int S_color, board mon, int t_max){
 		sc[n].second++;
 
 		cnt++;
-	      }
+	    }
 	}
 	
 	for(int c = 0; c < r_size; c++){
@@ -853,11 +875,11 @@ double evaluation(int S_color, board * eva, int fin){
 		ULL sift = (64 - j - ((i - 1) * 8));
 		if (((my_piece >> sift) & 1) == 1){//自分の置いた場所を探す board[i][j] == 1
 
-		    score += board_G[i][j];
+		    score += (S_color == Black)?board_G_B[i][j] : board_G_W[i][j];
 
 		}
 		else if (((you_piece >> sift) & 1) == 1){//相手の置いた場所を探す board[i][j] == 1{
-		    score -= board_G[i][j];
+		    score -= (S_color == Black)?board_G_B[i][j] : board_G_W[i][j];
 		}
 	    }
 	}

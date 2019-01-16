@@ -3,3 +3,7 @@ linux:g++ -std=c++14 -o forlinux -pthread main.cpp ai.cpp game.cpp -O3 -mtune=na
 mac: g++-8 -std=c++14 -o formac -pthread main.cpp ai.cpp game.cpp -O3 -mtune=native -march=native -mfpmath=both
 
 win:g++ -std=c++14 -o forwin.exe -pthread main.cpp ai.cpp game.cpp -O3 -mtune=native -march=native -mfpmath=both
+
+learning
+
+linux:g++ -std=c++14 -o Lforlinux -pthread learning.cpp ai.cpp game.cpp -O3 -mtune=native -march=native -mfpmath=both
