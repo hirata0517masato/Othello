@@ -6,6 +6,7 @@
 #include<algorithm>
 #include<queue>
 #include <random>
+#include<iostream>
 
 /*	int board_G[10][10] = {{0,0,0,0,0,0,0,0,0,0},
 	{0,120,-20,20,5,5,20,-20,120,0},
@@ -43,7 +44,71 @@ int board_G_B[10][10] = { { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 std::random_device rnd;     // 非決定的な乱数生成器を生成
 std::mt19937 mt(rnd());     //  メルセンヌ・ツイスタの32ビット版、引数は初期シード値
 std::uniform_int_distribution<> rand64(0, 10000);        // [0, 99] 範囲の一様乱数
-   
+
+/*	read_board_G関数　開始　*//////////////////////////////////////////////////////////////////////////////
+void read_board_G(){
+
+    for(int i = 1;i <= 8; i++){
+	for(int j = 1; j <= 8; j++){
+	    std::cin >> board_G_W[i][j];
+	    board_G_B[i][j] =  board_G_W[i][j];
+	}
+    }
+    
+}
+
+void read_board_G(int color){
+
+    if(color == Black){
+	for(int i = 1;i <= 8; i++){
+	    for(int j = 1; j <= 8; j++){
+		std::cin >> board_G_B[i][j];
+	   
+	    }
+	}
+    }else{
+	for(int i = 1;i <= 8; i++){
+	    for(int j = 1; j <= 8; j++){
+		std::cin >> board_G_W[i][j];
+	   
+	    }
+	}
+    
+    }
+}
+/*	read_board_G関数　終了　*////////////////////////////////////////////////////////////////////////////////
+
+/*	write_board_G関数　開始　*//////////////////////////////////////////////////////////////////////////////
+void write_board_G(int color){
+
+    if(color == Black){
+	for(int i = 1;i <= 8; i++){
+	    for(int j = 1; j <= 8; j++)std::cout << board_G_W[i][j] << " ";
+	    std::cout << std::endl;
+	}
+    }else{
+
+	for(int i = 1;i <= 8; i++){
+	    for(int j = 1; j <= 8; j++)std::cout << board_G_B[i][j] << " ";
+	    std::cout << std::endl;
+	}
+    }
+    
+}
+/*	write_board_G関数　終了　*////////////////////////////////////////////////////////////////////////////////
+
+/*	update_board_G関数　開始　*//////////////////////////////////////////////////////////////////////////////
+void update_board_G(int color){
+    int i = rand64(mt)%8 + 1,j = rand64(mt)%8 + 1,num = rand64(mt)%201 - 100;
+
+    if(color == Black)board_G_B[i][j] = num;
+    else board_G_W[i][j] = num;
+    
+}
+/*	update_board_G関数　終了　*////////////////////////////////////////////////////////////////////////////////
+
+
+
 /*	turn_dfs関数　開始　*//////////////////////////////////////////////////////////////////////////////
 board turn_dfs(int color,board dfs,int t_max){
 
@@ -702,7 +767,7 @@ board turn_monte(int S_color, board mon, int t_max){
 
     return mon;
 }
-
+/////////////////////////////////////////////////////////////////////
 board turn_monte2(int S_color, board mon, int t_max){
 
     int I = 0, J = 0, flag,r_size = 0;
