@@ -8,7 +8,7 @@
 //関数のプロトタイプ宣言
 void init(void);
 void pieceprint(int, board *);
-void total(void);
+int total(void);
 int learning(void);
 
 //グローバル変数宣言
@@ -18,14 +18,21 @@ board original;
 /*	関数　開始　*///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*	total関数　開始　*//////////////////////////////////////////////////////////////////////////////
-void total(){
-
-    int a = 0;
+int total(){
 
     original.rpiece = 0;
 
-    //表示
-    pieceprint(999, &original);
+    if (original.wpnum > original.bpnum){
+	return White;
+
+    }
+    else if (original.wpnum < original.bpnum){
+	    
+	return Black;
+
+    }
+	
+    return 0;
 }
 /*	total関数　終了　*////////////////////////////////////////////////////////////////////////////////
 
@@ -90,11 +97,9 @@ void pieceprint(int color, board * print){
     case 999:
 	if (print->wpnum > print->bpnum){
 	    std::cout <<   "Win W" << std::endl;
-
 	}
 	else if (print->wpnum < print->bpnum){
 	    std::cout << "Win B" << std::endl;
-
 	}
 	else{
 	    std::cout << "Draw" << std::endl;
@@ -139,13 +144,40 @@ void init(void){
 
 int main(){
 
-    int learningNum = 3;
+    int learningNum = 10;
+    int win_color;
+    int old_win_color = 0;
+    board old = original;
     
+    //read_board_G();
     for(int i = 0; i < learningNum; i++){
-	learning();
-	//std::cout << "learning" + i << std::endl;
+	win_color = learning();
+
+	if(old_win_color != win_color){
+	    if(win_color == Black)update_board_G(White);
+	    else update_board_G(Black);
+	}else{
+	    if(win_color == Black){
+		if(original.wpnum < old.wpnum){
+		    original = old;
+		}
+		update_board_G(White);
+	    }else{
+		if(original.bpnum < old.bpnum){
+		    original = old;
+		}
+		update_board_G(Black);
+	    }
+	}
+
+	old_win_color = win_color;
+	old = original;
     }
 
+    win_color = learning();
+    if(win_color == Black)write_board_G(Black);
+    else write_board_G(White);
+    
     return 0;
 }
 
@@ -168,13 +200,13 @@ int learning(){
 	cnt++;
 
 	if (f == 0){
-	    original = turn_ab(Black, original, 5);
+	    //original = turn_ab(Black, original, 5);
 		
-	    /*
+	    
 	      if (cnt >47)original = turn_ab(Black, original, 100);
 	      else if (cnt >33)original = turn_ab(Black, original, 12);
 	      else original = turn_ab(Black, original, 11);
-	    */
+	    
 	}
 
 
@@ -186,12 +218,12 @@ int learning(){
 	cnt++;
 			
 	if (f == 0){
-	    original = turn_ab(White, original, 5);
-	    /*
+	    //original = turn_ab(White, original, 5);
+	    
 	      if (cnt > 47)original = turn_ab(White, original, 200);
 	      else if (cnt > 33)original = turn_ab(White, original, 12);
 	      else original = turn_ab(White, original, 11);
-	    */
+	    
 	}
 	
 
@@ -199,9 +231,7 @@ int learning(){
     }
 
 
-    total();
-	
-    return 0;//正常終了
+    return total();
 }
 
 
