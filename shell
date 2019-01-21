@@ -1,0 +1,15 @@
+#!/bin/sh
+
+n=$1
+a=$2
+b=$3
+
+for i in `seq $a $b`
+do
+    j=`expr $i + 1`
+    ./Lforlinux < G$n/G$i.txt > G$n/G$j.txt
+    echo $i
+    cat G$n/G$j.txt
+done
+
+

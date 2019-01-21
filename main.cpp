@@ -152,13 +152,12 @@ void OP(){
 	//入力
 	std::cout << "mode: [B or W or E] "<< std::endl;
 	std::cin >> mode;
-	
-
+	//mode = 'B';
 	if (mode == 'B'){
 	
 	    flag = 1;//ゲームスタート
 
-	    B_player = 4;//手動
+	    B_player = 0;//手動
 	    W_player = 4;//オート7
 		
 	}else if (mode == 'W'){
@@ -221,7 +220,9 @@ int main(){
 
     int f;//0 = 継続 ,1 = 終了
     int cnt;
-
+    //read_board_G(Black);//////////////////////////
+    //read_board_G(White);//////////////////////////
+	
     /*    メインループ 開始   */ //ESCキーが押されたらループから抜ける
     while (END_Flag == 0){
 
@@ -233,8 +234,7 @@ int main(){
 	cnt = 0;
 
 	f = 0;
-
-	read_board_G(Black);
+	
 	while ( f == 0 && END_Flag == 0){
 	    
 	    search(Black, &original);
@@ -249,7 +249,7 @@ int main(){
 	
 	    case 1:
 		if (f == 0){
-		    if (cnt >55)original = turn_dfs(Black, original, 200);
+		    if (cnt >55)original = turn_dfs(Black, original, 999);
 		    else original = turn_dfs(Black, original, 5);
 		}
 		break;
@@ -258,18 +258,22 @@ int main(){
 		break;
 	    case 3:
 		if (f == 0){
-		    if (cnt >55)original = turn_minmax(Black, original, 200);
+		    if (cnt >55)original = turn_minmax(Black, original, 999);
 		    else original = turn_minmax(Black, original, 5);
 		}
 		break;
 	    case 4:
+		/*if(f == 0){
+		    if (cnt >47)original = turn_ab(Black, original, 999);
+		    else original = turn_ab(Black, original,8);
+		    }*/
 		/*if (f == 0){
-		  if (cnt >55)original = turn_ab(Black, original, 200);
+		  if (cnt >55)original = turn_ab(Black, original, 999);
 		  else original = turn_ab(Black, original, 10);
 		  }*/
 
 		if (f == 0){
-		    if (cnt >47)original = turn_ab(Black, original, 100);
+		    if (cnt >47)original = turn_ab(Black, original, 999);
 		    else if (cnt >33)original = turn_ab(Black, original, 12);
 		    else original = turn_ab(Black, original, 11);
 		}
@@ -295,7 +299,7 @@ int main(){
 		break;
 	    case 1:
 		if (f == 0){
-		    if (cnt > 55)original = turn_dfs(White, original, 200);
+		    if (cnt > 55)original = turn_dfs(White, original, 999);
 		    else original = turn_dfs(White, original, 5);
 		}
 		break;
@@ -304,18 +308,22 @@ int main(){
 		break;
 	    case 3:
 		if (f == 0){
-		    if (cnt > 55)original = turn_minmax(White, original, 200);
+		    if (cnt > 55)original = turn_minmax(White, original, 999);
 		    else original = turn_minmax(White, original, 5);
 		}
 		break;
 	    case 4:
+		/*if(f == 0){
+		    if (cnt > 47)original = turn_ab(White, original, 999);
+		    else original = turn_ab(White, original, 8);
+		    }*/
 		/*if (f == 0){
-		  if (cnt > 55)original = turn_ab(White, original, 200);
+		  if (cnt > 55)original = turn_ab(White, original, 999);
 		  else original = turn_ab(White, original, 10);
 		  }*/
 				
 		if (f == 0){
-		    if (cnt > 47)original = turn_ab(White, original, 200);
+		    if (cnt > 47)original = turn_ab(White, original, 999);
 		    else if (cnt > 33)original = turn_ab(White, original, 12);
 		    else original = turn_ab(White, original, 11);
 		}
@@ -337,6 +345,7 @@ int main(){
 
 	if (END_Flag == 0){//ゲーム終了時　判定はしない
 	    total();
+	    //break;
 	}
     }
     /*   メインループ 終了   */

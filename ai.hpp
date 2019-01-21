@@ -5,6 +5,8 @@ void read_board_G(void);
 void read_board_G(int);
 void write_board_G(int);
 void update_board_G(int);
+void update_board_G2(int);
+void copy_board_G(int);
 
 board turn_dfs(int,board,int);
 void turn_dfs_next_thread(int, int, board, int,double&);
