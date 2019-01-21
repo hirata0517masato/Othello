@@ -19,7 +19,8 @@ double turn_ab_next(int, int, board,int, double);
 board turn_monte(int, board , int );
 double turn_mon_next(int, int, board);
 double evaluation(int, board *,int);
-
+int Established_stone(ULL);
+    
 board turn_monte2(int, board , int );
 
 #endif
