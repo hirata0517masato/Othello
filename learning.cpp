@@ -22,6 +22,8 @@ int total(){
 
     original.rpiece = 0;
 
+    //pieceprint(999, &original);
+    
     if (original.wpnum > original.bpnum){
 	return White;
 
@@ -146,32 +148,16 @@ int main(){
 
     int learningNum = 10;
     int win_color;
-    int old_win_color = 0;
-    board old = original;
     
-    //read_board_G();
+    read_board_G();
     for(int i = 0; i < learningNum; i++){
 	win_color = learning();
 
-	if(old_win_color != win_color){
-	    if(win_color == Black)update_board_G(White);
-	    else update_board_G(Black);
-	}else{
-	    if(win_color == Black){
-		if(original.wpnum < old.wpnum){
-		    original = old;
-		}
-		update_board_G(White);
-	    }else{
-		if(original.bpnum < old.bpnum){
-		    original = old;
-		}
-		update_board_G(Black);
-	    }
-	}
+	if(win_color == Black)copy_board_G(White);
+	else copy_board_G(Black);
 
-	old_win_color = win_color;
-	old = original;
+	//update_board_G(Black);
+	update_board_G2(Black);
     }
 
     win_color = learning();
@@ -200,13 +186,14 @@ int learning(){
 	cnt++;
 
 	if (f == 0){
-	    //original = turn_ab(Black, original, 5);
+	    if (cnt >47)original = turn_ab(Black, original, 999);
+	    else original = turn_ab(Black, original, 8);
 		
-	    
-	      if (cnt >47)original = turn_ab(Black, original, 100);
+	    //45m
+	    /* if (cnt >47)original = turn_ab(Black, original, 999);
 	      else if (cnt >33)original = turn_ab(Black, original, 12);
 	      else original = turn_ab(Black, original, 11);
-	    
+	    */
 	}
 
 
@@ -218,12 +205,13 @@ int learning(){
 	cnt++;
 			
 	if (f == 0){
-	    //original = turn_ab(White, original, 5);
+	    if (cnt > 47)original = turn_ab(White, original, 999);
+	    else original = turn_ab(White, original, 8);
 	    
-	      if (cnt > 47)original = turn_ab(White, original, 200);
+	    /* if (cnt > 47)original = turn_ab(White, original, 999);
 	      else if (cnt > 33)original = turn_ab(White, original, 12);
 	      else original = turn_ab(White, original, 11);
-	    
+	    */
 	}
 	
 

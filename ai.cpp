@@ -41,6 +41,7 @@ int board_G_B[10][10] = { { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 			  { 0, 30, -12, 0, -1, -1, 0, -12, 30, 0 },
 			  { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
 
+
 std::random_device rnd;     // 非決定的な乱数生成器を生成
 std::mt19937 mt(rnd());     //  メルセンヌ・ツイスタの32ビット版、引数は初期シード値
 std::uniform_int_distribution<> rand64(0, 10000);        // [0, 99] 範囲の一様乱数
@@ -105,8 +106,47 @@ void update_board_G(int color){
     else board_G_W[i][j] = num;
     
 }
+
+void update_board_G2(int color){
+    int i = rand64(mt)%4 + 1,j = rand64(mt)%4 + 1,num = rand64(mt)%10 - 5;
+
+    if(num >= 0)num++;
+    
+    if(color == Black){
+	board_G_B[i][j] += num;
+	if(board_G_B[i][j] < -100)board_G_B[i][j] = -100;
+	if(100 < board_G_B[i][j])board_G_B[i][j] = 100;
+
+	board_G_B[9-i][j] = board_G_B[i][j];
+	board_G_B[i][9-j] = board_G_B[i][j];
+	board_G_B[9-i][9-j] = board_G_B[i][j];
+    }else{
+	board_G_W[i][j] += num;
+	if(board_G_W[i][j] < -100)board_G_W[i][j] = -100;
+	if(100 < board_G_W[i][j])board_G_W[i][j] = 100;
+
+	board_G_W[9-i][j] = board_G_W[i][j];
+	board_G_W[i][9-j] = board_G_W[i][j];
+	board_G_W[9-i][9-j] = board_G_W[i][j];
+    }
+}
 /*	update_board_G関数　終了　*////////////////////////////////////////////////////////////////////////////////
 
+/*	copy_board_G関数　開始　*//////////////////////////////////////////////////////////////////////////////
+void copy_board_G(int color){
+
+    if(color == Black){
+	for(int i = 1;i <= 8; i++){
+	    for(int j = 1; j <= 8; j++)board_G_B[i][j] = board_G_W[i][j];
+	}
+    }else{
+	for(int i = 1;i <= 8; i++){
+	    for(int j = 1; j <= 8; j++)board_G_W[i][j] = board_G_B[i][j];
+	}
+    }
+    
+}
+/*	copy_board_G関数　終了　*////////////////////////////////////////////////////////////////////////////////
 
 
 /*	turn_dfs関数　開始　*//////////////////////////////////////////////////////////////////////////////
@@ -628,7 +668,7 @@ double turn_ab_next(int color, int S_color, board ab,int t_max, double p_score){
 	    }
 
 	    //バブルソート
-	    if(color == White){
+	    if(S_color == White){
 		for (int i = 0; i < index; i++){
 		    for (int j = 0; j < index - 1 - i; j++){
 			if (board_G_W[di[j]][dj[j]] < board_G_W[di[j + 1]][dj[j + 1]]){
@@ -935,6 +975,22 @@ double evaluation(int S_color, board * eva, int fin){
 	    you_piece = eva->bpiece;
 	}
 
+	for (int i = 8; i >= 1; i--){
+	    for (int j = 8; j >= 1; j--){
+		if ((my_piece & 1) == 1){//自分の置いた場所を探す board[i][j] == 1
+
+		    score += (S_color == Black)?board_G_B[i][j] : board_G_W[i][j];
+
+		}
+		else if ((you_piece & 1) == 1){//相手の置いた場所を探す board[i][j] == 1{
+		    score -= (S_color == Black)?board_G_B[i][j] : board_G_W[i][j];
+		}
+
+		my_piece >>= 1;
+		you_piece >>= 1;
+	    }
+	}
+	/*	
 	for (int i = 1; i <= 8; i++){
 	    for (int j = 1; j <= 8; j++){
 		ULL sift = (64 - j - ((i - 1) * 8));
@@ -947,7 +1003,7 @@ double evaluation(int S_color, board * eva, int fin){
 		    score -= (S_color == Black)?board_G_B[i][j] : board_G_W[i][j];
 		}
 	    }
-	}
+	    }*/
     }
     else{//コマ数で評価
 	/*
