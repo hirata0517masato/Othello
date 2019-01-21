@@ -975,6 +975,10 @@ double evaluation(int S_color, board * eva, int fin){
 	    you_piece = eva->bpiece;
 	}
 
+	//if (S_color != Black){
+	score += Established_stone(my_piece) * 10;
+	score -= Established_stone(you_piece) * 10;
+	//}
 	for (int i = 8; i >= 1; i--){
 	    for (int j = 8; j >= 1; j--){
 		if ((my_piece & 1) == 1){//自分の置いた場所を探す board[i][j] == 1
@@ -1026,6 +1030,8 @@ double evaluation(int S_color, board * eva, int fin){
 		my = eva->bpnum;
 		you = 64 - eva->bpnum;
 	    }
+	    //my += Established_stone(eva->bpiece);
+	    //you += Established_stone(eva->wpiece);
 	}
 	else{
 	    if (eva->bpnum > eva->wpnum){
@@ -1036,6 +1042,8 @@ double evaluation(int S_color, board * eva, int fin){
 		my = 64 - eva->bpnum;
 		you = eva->bpnum;
 	    }
+	    //you += Established_stone(eva->bpiece);
+	    //my += Established_stone(eva->wpiece);
 	}
 	score = my - you;
     }
@@ -1045,7 +1053,85 @@ double evaluation(int S_color, board * eva, int fin){
 }
 /*	evaluation関数　終了　*//////////////////////////////////////////////////////////////////////////////
 
+/*	Established_stone関数　開始　*//////////////////////////////////////////////////////////////////////////////
+int Established_stone(ULL piece){
+    int num = 0;
+    ULL sift;// = (64 - j - ((i - 1) * 8));
+    
+    //左上
+    for(int i = 1; i<= 8;i++){
+	sift = (64 - 1 - ((i - 1) * 8));
+	if(((piece >> sift) & 1) == 1){
+	    num++;
+	}else{
+	    break;
+	}
+    }
+    for(int j = 1; j<= 8;j++){
+	sift = (64 - j - ((1 - 1) * 8));
+	if(((piece >> sift) & 1) == 1){
+	    num++;
+	}else{
+	    break;
+	}
+    }
+    
+    //右上
+    for(int i = 1; i <= 8;i++){
+	sift = (64 - 8 - ((i - 1) * 8));
+	if(((piece >> sift) & 1) == 1){
+	    num++;
+	}else{
+	    break;
+	}
+    }
+    for(int j = 8; j >= 1;j--){
+	sift = (64 - j - ((1 - 1) * 8));
+	if(((piece >> sift) & 1) == 1){
+	    num++;
+	}else{
+	    break;
+	}
+    }
+    
+    //左下
+    for(int i = 8; i >= 1;i--){
+	sift = (64 - 1 - ((i - 1) * 8));
+	if(((piece >> sift) & 1) == 1){
+	    num++;
+	}else{
+	    break;
+	}
+    }
+    for(int j = 1; j<= 8;j++){
+	sift = (64 - j - ((8 - 1) * 8));
+	if(((piece >> sift) & 1) == 1){
+	    num++;
+	}else{
+	    break;
+	}
+    }
+    
+    //右下
+    for(int i = 8; i >= 1;i--){
+	sift = (64 - 8 - ((i - 1) * 8));
+	if(((piece >> sift) & 1) == 1){
+	    num++;
+	}else{
+	    break;
+	}
+    }
+    for(int j = 8; j >= 1;j--){
+	sift = (64 - j - ((8 - 1) * 8));
+	if(((piece >> sift) & 1) == 1){
+	    num++;
+	}else{
+	    break;
+	}
+    }
 
-
+    return num;
+}
+/*	Established_stone関数　終了　*//////////////////////////////////////////////////////////////////////////////
 
 
