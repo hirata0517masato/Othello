@@ -99,12 +99,48 @@ void write_board_G(int color){
 /*	write_board_G関数　終了　*////////////////////////////////////////////////////////////////////////////////
 
 /*	update_board_G関数　開始　*//////////////////////////////////////////////////////////////////////////////
-void update_board_G(int color){
-    int i = rand64(mt)%8 + 1,j = rand64(mt)%8 + 1,num = rand64(mt)%201 - 100;
+/*void update_board_G(int color){
+  int i = rand64(mt)%8 + 1,j = rand64(mt)%8 + 1,num = rand64(mt)%201 - 100;
 
-    if(color == Black)board_G_B[i][j] = num;
-    else board_G_W[i][j] = num;
+  if(color == Black)board_G_B[i][j] = num;
+  else board_G_W[i][j] = num;
     
+  }*/
+
+void update_board_G(int color){
+    int i = rand64(mt)%4 + 1,j = rand64(mt)%4 + 1,num = rand64(mt)%10 - 5;
+
+    if(num >= 0)num++;
+    
+    if(color == Black){
+	for(int c = 0; c < 2;c++){
+	    board_G_B[i][j] += num;
+	    if(board_G_B[i][j] < -100)board_G_B[i][j] = -100;
+	    if(100 < board_G_B[i][j])board_G_B[i][j] = 100;
+
+	    board_G_B[9-i][j] = board_G_B[i][j];
+	    board_G_B[i][9-j] = board_G_B[i][j];
+	    board_G_B[9-i][9-j] = board_G_B[i][j];
+
+	    int t = i;
+	    i = j;
+	    j = t;
+	}
+    }else{
+	for(int c = 0; c < 2;c++){
+	    board_G_W[i][j] += num;
+	    if(board_G_W[i][j] < -100)board_G_W[i][j] = -100;
+	    if(100 < board_G_W[i][j])board_G_W[i][j] = 100;
+
+	    board_G_W[9-i][j] = board_G_W[i][j];
+	    board_G_W[i][9-j] = board_G_W[i][j];
+	    board_G_W[9-i][9-j] = board_G_W[i][j];
+	
+	    int t = i;
+	    i = j;
+	    j = t;
+	}
+    }
 }
 
 void update_board_G2(int color){
@@ -956,182 +992,355 @@ double turn_mon_next(int color, int  S_color, board mon){
 
 
 
-
 /*	evaluation関数　開始　*//////////////////////////////////////////////////////////////////////////////
+
 double evaluation(int S_color, board * eva, int fin){
+
     double score = 0;
+
+
 
     if (fin == 0){//重みで評価
 
+
+
 	//search(S_color ^ 1, eva);//相手が置けるか調べる
 
+
+
 	ULL my_piece, you_piece;
+
 	if (S_color == Black){
+
 	    my_piece = eva->bpiece;
+
 	    you_piece = eva->wpiece;
+
 	}
+
 	else{
+
 	    my_piece = eva->wpiece;
+
 	    you_piece = eva->bpiece;
+
 	}
+
+
 
 	//if (S_color != Black){
+
 	score += Established_stone(my_piece) * 10;
+
 	score -= Established_stone(you_piece) * 10;
+
 	//}
+
 	for (int i = 8; i >= 1; i--){
+
 	    for (int j = 8; j >= 1; j--){
+
 		if ((my_piece & 1) == 1){//自分の置いた場所を探す board[i][j] == 1
 
+
+
 		    score += (S_color == Black)?board_G_B[i][j] : board_G_W[i][j];
 
+
+
 		}
+
 		else if ((you_piece & 1) == 1){//相手の置いた場所を探す board[i][j] == 1{
+
 		    score -= (S_color == Black)?board_G_B[i][j] : board_G_W[i][j];
+
 		}
+
+
 
 		my_piece >>= 1;
+
 		you_piece >>= 1;
+
 	    }
+
 	}
+
 	/*	
+
 	for (int i = 1; i <= 8; i++){
+
 	    for (int j = 1; j <= 8; j++){
+
 		ULL sift = (64 - j - ((i - 1) * 8));
+
 		if (((my_piece >> sift) & 1) == 1){//自分の置いた場所を探す board[i][j] == 1
+
+
 
 		    score += (S_color == Black)?board_G_B[i][j] : board_G_W[i][j];
 
+
+
 		}
+
 		else if (((you_piece >> sift) & 1) == 1){//相手の置いた場所を探す board[i][j] == 1{
+
 		    score -= (S_color == Black)?board_G_B[i][j] : board_G_W[i][j];
+
 		}
+
 	    }
+
 	    }*/
+
     }
+
     else{//コマ数で評価
+
 	/*
+
 	  if (S_color == Black){
+
 	  if (eva->bpnum > eva->wpnum)return eva->bpnum + (64 - eva->bpnum - eva->wpnum);//勝ちなら空白のマスも自分の色としてカウント
+
 	  else return 0;//負けたら意味は無い
+
 	  }
+
 	  else{
+
 	  if (eva->bpnum > eva->wpnum)return 0;//負けたら意味は無い
+
 	  else return eva->wpnum + (64 - eva->bpnum - eva->wpnum);//勝ちなら空白のマスも自分の色としてカウント
+
 	  }*/
 
+
+
 	int my, you;
+
 	if (S_color == Black){
+
 	    if (eva->bpnum > eva->wpnum) {
+
 		my = 64 - eva->wpnum;//勝ちなら空白のマスも自分の色としてカウント
+
 		you = eva->wpnum;
+
 	    }
+
 	    else{
+
 		my = eva->bpnum;
+
 		you = 64 - eva->bpnum;
+
 	    }
+
 	    //my += Established_stone(eva->bpiece);
+
 	    //you += Established_stone(eva->wpiece);
+
 	}
+
 	else{
+
 	    if (eva->bpnum > eva->wpnum){
+
 		my = eva->wpnum;
+
 		you = 64 -eva->wpnum;
+
 	    }
+
 	    else {
+
 		my = 64 - eva->bpnum;
+
 		you = eva->bpnum;
+
 	    }
+
 	    //you += Established_stone(eva->bpiece);
+
 	    //my += Established_stone(eva->wpiece);
+
 	}
+
 	score = my - you;
+
     }
 
+
+
     return score;
+
     //スコアXコマ数
+
 }
+
 /*	evaluation関数　終了　*//////////////////////////////////////////////////////////////////////////////
 
 /*	Established_stone関数　開始　*//////////////////////////////////////////////////////////////////////////////
+
 int Established_stone(ULL piece){
+
     int num = 0;
+
     ULL sift;// = (64 - j - ((i - 1) * 8));
+
     
+
     //左上
+
     for(int i = 1; i<= 8;i++){
+
 	sift = (64 - 1 - ((i - 1) * 8));
+
 	if(((piece >> sift) & 1) == 1){
+
 	    num++;
+
 	}else{
+
 	    break;
+
 	}
-    }
-    for(int j = 1; j<= 8;j++){
-	sift = (64 - j - ((1 - 1) * 8));
-	if(((piece >> sift) & 1) == 1){
-	    num++;
-	}else{
-	    break;
-	}
-    }
-    
-    //右上
-    for(int i = 1; i <= 8;i++){
-	sift = (64 - 8 - ((i - 1) * 8));
-	if(((piece >> sift) & 1) == 1){
-	    num++;
-	}else{
-	    break;
-	}
-    }
-    for(int j = 8; j >= 1;j--){
-	sift = (64 - j - ((1 - 1) * 8));
-	if(((piece >> sift) & 1) == 1){
-	    num++;
-	}else{
-	    break;
-	}
-    }
-    
-    //左下
-    for(int i = 8; i >= 1;i--){
-	sift = (64 - 1 - ((i - 1) * 8));
-	if(((piece >> sift) & 1) == 1){
-	    num++;
-	}else{
-	    break;
-	}
-    }
-    for(int j = 1; j<= 8;j++){
-	sift = (64 - j - ((8 - 1) * 8));
-	if(((piece >> sift) & 1) == 1){
-	    num++;
-	}else{
-	    break;
-	}
-    }
-    
-    //右下
-    for(int i = 8; i >= 1;i--){
-	sift = (64 - 8 - ((i - 1) * 8));
-	if(((piece >> sift) & 1) == 1){
-	    num++;
-	}else{
-	    break;
-	}
-    }
-    for(int j = 8; j >= 1;j--){
-	sift = (64 - j - ((8 - 1) * 8));
-	if(((piece >> sift) & 1) == 1){
-	    num++;
-	}else{
-	    break;
-	}
+
     }
 
+    for(int j = 1; j<= 8;j++){
+
+	sift = (64 - j - ((1 - 1) * 8));
+
+	if(((piece >> sift) & 1) == 1){
+
+	    num++;
+
+	}else{
+
+	    break;
+
+	}
+
+    }
+
+    
+
+    //右上
+
+    for(int i = 1; i <= 8;i++){
+
+	sift = (64 - 8 - ((i - 1) * 8));
+
+	if(((piece >> sift) & 1) == 1){
+
+	    num++;
+
+	}else{
+
+	    break;
+
+	}
+
+    }
+
+    for(int j = 8; j >= 1;j--){
+
+	sift = (64 - j - ((1 - 1) * 8));
+
+	if(((piece >> sift) & 1) == 1){
+
+	    num++;
+
+	}else{
+
+	    break;
+
+	}
+
+    }
+
+    
+
+    //左下
+
+    for(int i = 8; i >= 1;i--){
+
+	sift = (64 - 1 - ((i - 1) * 8));
+
+	if(((piece >> sift) & 1) == 1){
+
+	    num++;
+
+	}else{
+
+	    break;
+
+	}
+
+    }
+
+    for(int j = 1; j<= 8;j++){
+
+	sift = (64 - j - ((8 - 1) * 8));
+
+	if(((piece >> sift) & 1) == 1){
+
+	    num++;
+
+	}else{
+
+	    break;
+
+	}
+
+    }
+
+    
+
+    //右下
+
+    for(int i = 8; i >= 1;i--){
+
+	sift = (64 - 8 - ((i - 1) * 8));
+
+	if(((piece >> sift) & 1) == 1){
+
+	    num++;
+
+	}else{
+
+	    break;
+
+	}
+
+    }
+
+    for(int j = 8; j >= 1;j--){
+
+	sift = (64 - j - ((8 - 1) * 8));
+
+	if(((piece >> sift) & 1) == 1){
+
+	    num++;
+
+	}else{
+
+	    break;
+
+	}
+
+    }
+
+
+
     return num;
+
 }
+
 /*	Established_stone関数　終了　*//////////////////////////////////////////////////////////////////////////////
+
 
 
